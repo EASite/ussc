@@ -17,6 +17,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [ItemController::class, 'index'])->name('home');
 Route::post('/add', [ItemController::class, 'add'])->name('add_item');
-Route::post('/edit/{id}', [ItemController::class, 'edit'])->name('edit_item');
-Route::get('/delete/{id}', [ItemController::class, 'delete'])->name('delete_item');
-Route::get('/getItems', [ItemController::class, 'getItems'])->name('getItems');
+Route::post('/save', [ItemController::class, 'save'])->name('save_item');
+Route::delete('/delete/{id}', [ItemController::class, 'delete'])->name('delete_item');
+Route::post('/getItems', [ItemController::class, 'getItems'])->name('getItems');

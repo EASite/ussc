@@ -24,26 +24,43 @@ class ItemController extends Controller
         $item->price = $request->input('price');
 
         $item->save();
+    }
 
-        \Session::flash('action_status', 'Запись добавлена!');
+    public function save(Request $request) {
+        $item = Item::find($request->input('id'));
 
-        return redirect()->route('home');
+        $item->title = $request->input('title');
+        $item->author = $request->input('author');
+        $item->description = $request->input('description');
+        $item->price = $request->input('price');
+
+        $item->save();
     }
 
     public function delete($id)
     {
-        $item = Item::find($id);
-
         Item::destroy($id);
-
-        \Session::flash('action_status', "Запись \"{$item->title}\" удалена!");
-
-        return redirect()->route('home');
     }
 
-    public function getItems()
+    public function getItems(Request $request)
     {
-        # return response()->json( Item::all()->toArray() );
-        return json_encode( Item::all()->toArray(), JSON_UNESCAPED_UNICODE);
+        $where = [];
+
+        if ($request->input('beginPrice')) {
+            array_push($where, ['price', '>=', $request->input('beginPrice')]);
+        }
+
+        if ($request->input('endPrice')) {
+            array_push($where, ['price', '<', $request->input('endPrice')]);
+        }
+
+
+        $items = Item::/*orderByRaw('LENGTH('.$request->input('sortBy').')', $request->input('sortDir'))
+            ->*/orderBy($request->input('sortBy'), $request->input('sortDir'))
+            ->select('id', 'title', 'author', 'description', 'price')
+            ->where($where)
+            ->get();
+
+        return json_encode( $items, JSON_UNESCAPED_UNICODE);
     }
 }
